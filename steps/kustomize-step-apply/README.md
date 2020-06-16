@@ -1,4 +1,4 @@
-# kustomize
+# kustomize-step-apply
 
 The Kustomize step container applies Kubernetes kustomizations.
 
@@ -32,7 +32,7 @@ steps:
 ...
 
 - name: kustomize
-  image: projectnebula/kustomize:latest
+  image: relaysh/kustomize-step-apply
   spec:
     cluster:
       name: my-cluster
