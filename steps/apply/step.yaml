@@ -15,3 +15,22 @@ schemas:
   spec:
     source: file
     file: spec.schema.json
+examples:
+- summary: Kustomize apply
+  content:
+    apiVersion: v1
+    kind: Step
+    name: kustomize
+    image: relaysh/kustomize-step-apply
+    spec:
+      cluster:
+        name: my-cluster
+        connection: !Connection { type: kubernetes, name: my-cluster }
+      path: !Parameter pathToConfigurations
+      namespace: !Parameter namespace
+      git:
+        ssh_key: !Secret ssh_key
+        known_hosts: !Secret known_hosts
+        name: !Parameter repoName
+        branch: !Parameter gitBranch
+        repository: !Parameter pathToRepo
