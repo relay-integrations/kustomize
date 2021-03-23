@@ -1,18 +1,27 @@
-#!/bin/sh
-NS=$(ni get -p {.namespace})
-CLUSTER=$(ni get -p {.cluster.name})
-KUBECONFIG=/workspace/${CLUSTER}/kubeconfig
+#!/bin/bash
+set -euo pipefail
+
+unset KUBERNETES_SERVICE_HOST
+unset KUBERNETES_SERVICE_PORT
+
+CLUSTER="$(ni get -p {.cluster.name})"
+CLUSTER="${CLUSTER:-default}"
+KUBECONFIG="/workspace/${CLUSTER}/kubeconfig"
+KUBECTL_ARGS=( "--kubeconfig=${KUBECONFIG}" )
 
 ni cluster config
 
-WORKSPACE_PATH=$(ni get -p {.path})
+NS="$(ni get -p {.namespace})"
+[ -n "${NS}" ] && KUBECTL_ARGS+=( "--namespace=${NS}" )
 
-GIT=$(ni get -p {.git})
+WORKSPACE_PATH="$(ni get -p {.path})"
+
+GIT="$(ni get -p {.git})"
 if [ -n "${GIT}" ]; then
     ni git clone
-    NAME=$(ni get -p {.git.name})
-    WORKSPACE_PATH=/workspace/${NAME}/${WORKSPACE_PATH}
+    NAME="$(ni get -p {.git.name})"
+    WORKSPACE_PATH="/workspace/${NAME}/${WORKSPACE_PATH}"
 fi
 
-kubectl kustomize ${WORKSPACE_PATH}
-kubectl apply -k ${WORKSPACE_PATH} --namespace ${NS} --kubeconfig ${KUBECONFIG}
+set -x
+kustomize build "${WORKSPACE_PATH}" | kubectl apply "${KUBECTL_ARGS[@]}" -f -

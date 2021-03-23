@@ -12,7 +12,23 @@ RUN set -eux ; \
     cd - && \
     rm -fr /tmp/ni
 RUN apk --no-cache add bash ca-certificates curl git jq openssh && update-ca-certificates
-RUN ["/bin/bash", "-c", "set -eux\nmkdir -p /tmp/kubectl \u0026\u0026 \\\n  cd /tmp/kubectl \u0026\u0026 \\\n  curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.16.0/bin/linux/amd64/kubectl \u0026\u0026 \\\n  echo \"$( curl -sL https://storage.googleapis.com/kubernetes-release/release/v1.16.0/bin/linux/amd64/kubectl.sha256 )  kubectl\" | sha256sum -c - \u0026\u0026 \\\n  chmod +x kubectl \u0026\u0026 \\\n  mv kubectl /usr/local/bin/kubectl \u0026\u0026 \\\n  cd - \u0026\u0026 \\\n  rm -fr /tmp/kubectl\n"]
+RUN set -eux ; \
+    mkdir -p /tmp/kubectl && \
+    cd /tmp/kubectl && \
+    curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.18.16/bin/linux/amd64/kubectl && \
+    echo "$( curl -sL https://storage.googleapis.com/kubernetes-release/release/v1.18.16/bin/linux/amd64/kubectl.sha256 )  kubectl" | sha256sum -c - && \
+    chmod +x kubectl && \
+    mv kubectl /usr/local/bin/kubectl && \
+    cd - && \
+    rm -fr /tmp/kubectl
+RUN set -eux ; \
+    mkdir -p /tmp/kustomize && \
+    wget https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv3.8.10/kustomize_v3.8.10_linux_amd64.tar.gz && \
+    tar -xvzf kustomize_v3.8.10_linux_amd64.tar.gz && \
+    mv kustomize /usr/local/bin/kustomize && \
+    cd - && \
+    rm -fr /tmp/kustomize
+RUN kustomize version
 COPY "./step.sh" "/nebula/step-kustomize.sh"
 ENTRYPOINT []
 CMD ["/bin/bash", "/nebula/step-kustomize.sh"]
