@@ -51,15 +51,22 @@
     },
     "git": {
       "type": "object",
-      "description": "A map of git configuration. If you're using HTTPS, only name and repository are required.",
+      "description": "A git repository to clone.",
       "properties": {
-        "ssh_key": {
-          "type": "string",
-          "description": "The SSH key to use when cloning the git repository. You can pass the key to Relay as a secret. See the example below."
+        "connection": {
+          "type": "object",
+          "x-relay-connectionType": "ssh",
+          "description": "A Relay SSH connection to use.",
+          "properties": {
+            "sshKey": {
+              "type": "string",
+              "description": "The SSH key to use when cloning the git repository."
+            }
+          }
         },
-        "known_hosts": {
+        "knownHosts": {
           "type": "string",
-          "description": "SSH known hosts file. Use a Relay secret to pass the contents of the file into the workflow as a base64-encoded string. See the example below."
+          "description": "SSH known hosts file."
         },
         "name": {
           "type": "string",
@@ -67,7 +74,7 @@
         },
         "branch": {
           "type": "string",
-          "description": "The Git branch to clone.",
+          "description": "The git branch to clone.",
           "default": "master"
         },
         "repository": {
@@ -76,7 +83,6 @@
         }
       },
       "required": [
-        "ssh_key",
         "name",
         "repository"
       ]
@@ -84,7 +90,6 @@
   },
   "required": [
     "cluster",
-    "connection",
     "path"
   ],
   "additionalProperties": false
