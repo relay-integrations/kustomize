@@ -23,8 +23,8 @@ RUN set -eux ; \
     rm -fr /tmp/kubectl
 RUN set -eux ; \
     mkdir -p /tmp/kustomize && \
-    wget https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv3.8.10/kustomize_v3.8.10_linux_amd64.tar.gz && \
-    tar -xvzf kustomize_v3.8.10_linux_amd64.tar.gz && \
+    wget https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv4.5.5/kustomize_v4.5.5_linux_amd64.tar.gz && \
+    tar -xvzf kustomize_v4.5.5_linux_amd64.tar.gz && \
     mv kustomize /usr/local/bin/kustomize && \
     cd - && \
     rm -fr /tmp/kustomize
